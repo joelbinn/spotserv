@@ -1,17 +1,19 @@
 module.exports = function (grunt) {
 
+  var os = require('os');
+  grunt.log.writeln('OS: '+os.platform());
+  var nodeSpotTarget;
+  if (os.platform() === 'linux' && os.arch() === 'arm') {
+    nodeSpotTarget = 'raspberry';
+  } else if (os.platform() === 'darwin') {
+    nodeSpotTarget = 'osx';
+  } else {
+    grunt.log.writeln('OS: '+os.platform() + ' arch: '+os.arch() +' is not supported');
+    process.exit(1);
+  }
   // Project configuration.
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
-    coffee: {
-      compile: {
-        expand: true,
-        cwd: 'src/coffee',
-        src: ['**/*.coffee'],
-        dest: 'node_modules/spotserv',
-        ext: '.js'
-      }
-    },
     copy: {
       js: {
         expand: true,
@@ -70,7 +72,6 @@ module.exports = function (grunt) {
   grunt.loadNpmTasks("grunt-ts");
 
   grunt.registerTask('build', [
-    'coffee:compile',
     'ts:compile',
     'copy:js',
     'copy:appkey']);
@@ -84,5 +85,5 @@ module.exports = function (grunt) {
     'copy:nodespotify_raspberry',
     'copy:dist']);
 
-  grunt.registerTask('default', ['clean', 'build-osx']);
+  grunt.registerTask('default', ['clean', 'build-'+nodeSpotTarget]);
 };
