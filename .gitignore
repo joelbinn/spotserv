@@ -1,0 +1,10 @@
+target/
+dist/
+node_modules/
+cache/
+.tscache/
+settings/
+npm-debug.log
+.baseDir.ts
+tscommand-*.tmp.txt
+spotify_appkey.key
