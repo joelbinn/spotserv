@@ -12,7 +12,6 @@
   "license": "ISC",
   "dependencies": {
     "lodash": "^2.4.1",
-    "node-spotify": "file:../../../andras/node-spotify",
     "prompt": "^0.2.14"
   },
   "devDependencies": {
