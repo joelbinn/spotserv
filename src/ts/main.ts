@@ -2,9 +2,12 @@
 /// < reference path="./lodash/lodash.d.ts" />
 /// < reference path="./prompt/prompt.d.ts" />
 /// < reference path="./node/node.d.ts" />
+/// < reference path="./rx/rx.d.ts" />
+import rx = require('rx');
 import _ = require('lodash');
 import prompt = require('prompt')
 import spotifyConfig = require('spotserv/node-spotify/spotify');
+
 
 export function start() {
     var spotify = spotifyConfig({appkeyFile: './spotify_appkey.key'});
