@@ -14,25 +14,6 @@ export function start() {
     console.log("spotify: ", spotify.version);
     var webServer:webserver.Server = new webserver.Server(spotify);
 
-    spotify.on({
-        ready: ()=> {
-            console.log('Spotify is ready');
-            console.log("# of playlists: ',spotify.playlistContainer.numPlaylists");
-            console.log('playlist 0: ', spotify.playlistContainer.getPlaylist(0));
-            var track = spotify.playlistContainer.getPlaylist(1).getTrack(1);
-            console.log('track 0: ', track);
-            console.log('album: ', track.album);
-            console.log('image: data:image/jpeg;base64,' + track.album.getCoverBase64());
-            spotify.player.play(track);
-        },
-        logout: ()=> {
-            console.log('...Elvis has left the building!');
-            setTimeout(()=> {
-                process.exit();
-            }, 1000);
-        }
-    });
-
     process.on('SIGINT', () => {
             console.log('Logging out from Spotify...');
             spotify.logout();
