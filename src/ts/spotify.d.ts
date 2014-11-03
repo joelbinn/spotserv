@@ -1,9 +1,4 @@
-declare var spot: spotify.SpotifyStatic;
-
-declare module spotify {
-    interface SpotifyStatic {
-        (configuration:any): Spotify;
-    }
+declare module spotifyapi {
     interface Spotify {
         on(configuration:{ready:()=>void;logout:()=>void}):void;
         login(username:string, password:string, remember:boolean, userRemembered:boolean);
@@ -19,8 +14,21 @@ declare module spotify {
         collaborative:boolean;
         sessionUser:any;
         version:string;
-        player:any;
+        player:Player;
+        // Fudge to map to spotify.Search and be able to create instance of class Search below
+        Search(searchText:string, offset?:number, limit?:number):void;
     }
+
+    interface Player {
+        play(Track):void;
+        stop():void;
+        resume():void;
+        pause():void;
+        seek(second:number):void;
+        currentSecond:number;
+        on(configuration:{endOfTrack:()=>void}):void;
+    }
+
     interface Playlist {
         name:string;
         collaborative:boolean;
@@ -29,6 +37,7 @@ declare module spotify {
         getTracks():Track[];
         getTrack(index:number): Track
     }
+
     interface Track {
         name:string;
         link:string;
@@ -54,7 +63,19 @@ declare module spotify {
         displayName:string;
         canonicalName:string;
     }
+
+    export class Search {
+        execute(callback:(err, searchResult)=>void):void;
+    }
+
+    interface SpotifyStatic {
+        (configuration:any): spotifyapi.Spotify;
+    }
 }
+
 declare module "spotserv/node-spotify/spotify" {
+
+    var spot:spotifyapi.SpotifyStatic;
+
     export = spot;
 }

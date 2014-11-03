@@ -6,17 +6,17 @@
 import rx = require('rx');
 import _ = require('lodash');
 import prompt = require('prompt');
-import spotifyConfig = require('spotserv/node-spotify/spotify');
+import spotify = require('spotserv/node-spotify/spotify');
 import webserver = require('./webserver/Server');
 
 export function start() {
-    var spotify = spotifyConfig({appkeyFile: './spotify_appkey.key'});
-    console.log("spotify: ", spotify.version);
-    var webServer:webserver.Server = new webserver.Server(spotify);
+    var spot:spotifyapi.Spotify = spotify({appkeyFile: './spotify_appkey.key'});
+    console.log("spotify: ", spot.version);
+    var webServer:webserver.Server = new webserver.Server(spot);
 
     process.on('SIGINT', () => {
             console.log('Logging out from Spotify...');
-            spotify.logout();
+            spot.logout();
             setTimeout(()=> {
                 console.log('Exit!');
                 process.exit();
@@ -44,7 +44,7 @@ export function start() {
         }
         console.log('Command-line input received:');
         console.log('  Username: ' + result.username);
-        spotify.login(result.username, result.password, false, false);
+        spot.login(result.username, result.password, false, false);
         webServer.start();
     });
 }
