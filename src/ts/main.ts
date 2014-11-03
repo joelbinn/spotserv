@@ -7,12 +7,12 @@ import rx = require('rx');
 import _ = require('lodash');
 import prompt = require('prompt');
 import spotifyConfig = require('spotserv/node-spotify/spotify');
-import server = require('./server');
+import webserver = require('./webserver/Server');
 
 export function start() {
     var spotify = spotifyConfig({appkeyFile: './spotify_appkey.key'});
     console.log("spotify: ", spotify.version);
-    var webServer:server.Server = new server.Server(spotify);
+    var webServer:webserver.Server = new webserver.Server(spotify);
 
     spotify.on({
         ready: ()=> {

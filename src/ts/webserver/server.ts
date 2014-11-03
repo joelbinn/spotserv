@@ -1,7 +1,7 @@
-/// < reference path="spotify.d.ts" />
-/// < reference path="lodash/lodash.d.ts" />
-/// < reference path="node/node.d.ts" />
-/// < reference path="rx/rx.d.ts" />
+/// < reference path="../spotify.d.ts" />
+/// < reference path="../lodash/lodash.d.ts" />
+/// < reference path="../node/node.d.ts" />
+/// < reference path="../rx/rx.d.ts" />
 export class Server {
     spotify:spotify.Spotify;
 
