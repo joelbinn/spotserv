@@ -5,26 +5,14 @@
 /// < reference path="./rx/rx.d.ts" />
 import rx = require('rx');
 import _ = require('lodash');
-import prompt = require('prompt')
+import prompt = require('prompt');
 import spotifyConfig = require('spotserv/node-spotify/spotify');
-
+import server = require('./server');
 
 export function start() {
     var spotify = spotifyConfig({appkeyFile: './spotify_appkey.key'});
-
-    var properties = [
-        {
-            name: 'username',
-            validator: /^[a-zA-Z\s\-]+$/,
-            warning: 'Username must be only letters, spaces, or dashes'
-        },
-        {
-            name: 'password',
-            hidden: true
-        }
-    ];
-
     console.log("spotify: ", spotify.version);
+    var webServer:server.Server = new server.Server(spotify);
 
     spotify.on({
         ready: ()=> {
@@ -56,8 +44,18 @@ export function start() {
     );
 
 
+    var properties = [
+        {
+            name: 'username',
+            validator: /^[a-zA-Z\s\-]+$/,
+            warning: 'Username must be only letters, spaces, or dashes'
+        },
+        {
+            name: 'password',
+            hidden: true
+        }
+    ];
     prompt.start();
-
     prompt.get(properties, (err, result) => {
         if (err) {
             console.log('Error: ', err);
@@ -66,5 +64,6 @@ export function start() {
         console.log('Command-line input received:');
         console.log('  Username: ' + result.username);
         spotify.login(result.username, result.password, false, false);
+        webServer.start();
     });
-};
+}
