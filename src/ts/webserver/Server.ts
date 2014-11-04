@@ -14,6 +14,7 @@ export class Server {
 
     constructor(spot:spotifyapi.Spotify) {
         this.spot = spot;
+
         spot.on({
             ready: ()=> {
                 console.log('Spotify is ready');
@@ -22,6 +23,7 @@ export class Server {
                 console.log('...Elvis has left the building!');
             }
         });
+
         YAML.load('./config.yaml', (config)=> {
             this.configure(config);
         });
@@ -40,11 +42,13 @@ export class Server {
             this.spot.login(config.userName, config.password, remember, userRemembered);
             res.status(200).end();
         });
+
         this.webapp.route('/spot/logout').post((req, res, next)=> {
             console.log('/spot/logout');
             this.spot.logout();
             res.status(200).end();
         });
+
         this.webapp.route('/spot/playlists/:id').get((req, res, next)=> {
             console.log('/spot/playlists with params is ', JSON.stringify(req.params));
             var playlist = this.spot.playlistContainer.getPlaylist(parseInt(req.params.id));
