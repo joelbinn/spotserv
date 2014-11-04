@@ -1,6 +1,6 @@
 declare module spotifyapi {
     interface Spotify {
-        on(configuration:{ready:()=>void;logout:()=>void}):void;
+        on(configuration:{ready?:()=>void;logout?:()=>void}):void;
         login(username:string, password:string, remember:boolean, userRemembered:boolean);
         logout():void;
 
@@ -12,7 +12,7 @@ declare module spotifyapi {
             owner: User;
         };
         collaborative:boolean;
-        sessionUser:any;
+        sessionUser:User;
         version:string;
         player:Player;
         // Fudge to map to spotify.Search and be able to create instance of class Search below

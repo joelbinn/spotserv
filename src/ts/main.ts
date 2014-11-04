@@ -12,39 +12,25 @@ import webserver = require('./webserver/Server');
 export function start() {
     var spot:spotifyapi.Spotify = spotify({appkeyFile: './spotify_appkey.key'});
     console.log("spotify: ", spot.version);
-    var webServer:webserver.Server = new webserver.Server(spot);
 
     process.on('SIGINT', () => {
-            console.log('Logging out from Spotify...');
-            spot.logout();
-            setTimeout(()=> {
+            if (spot.sessionUser !== undefined) {
+                console.log('Logging out ' + spot.sessionUser.displayName + ' from Spotify...');
+                spot.on({
+                    logout: ()=> {
+                        console.log('...logged out. Exit!');
+                        process.exit();
+                    }
+                });
+                console.log('Logging out...');
+                spot.logout();
+            } else {
                 console.log('Exit!');
                 process.exit();
-            }, 10000);
+            }
         }
     );
 
-
-    var properties = [
-        {
-            name: 'username',
-            validator: /^[a-zA-Z\s\-]+$/,
-            warning: 'Username must be only letters, spaces, or dashes'
-        },
-        {
-            name: 'password',
-            hidden: true
-        }
-    ];
-    prompt.start();
-    prompt.get(properties, (err, result) => {
-        if (err) {
-            console.log('Error: ', err);
-            return;
-        }
-        console.log('Command-line input received:');
-        console.log('  Username: ' + result.username);
-        spot.login(result.username, result.password, false, false);
-        webServer.start();
-    });
+    var webServer:webserver.Server = new webserver.Server(spot);
+    webServer.start();
 }

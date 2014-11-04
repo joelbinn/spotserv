@@ -14,7 +14,8 @@
     "express": "4.10.1",
     "lodash": "2.4.1",
     "prompt": "0.2.14",
-    "rx": "2.3.14"
+    "rx": "2.3.14",
+    "yamljs": "^0.2.1"
   },
   "devDependencies": {
     "grunt": "0.4.5",

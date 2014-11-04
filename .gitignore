@@ -8,3 +8,4 @@ npm-debug.log
 .baseDir.ts
 tscommand-*.tmp.txt
 spotify_appkey.key
+config.yaml
