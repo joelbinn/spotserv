@@ -11,6 +11,9 @@ Install node: http://weworkweplay.com/play/raspberry-pi-nodejs/
 ### In case of problems
 General, see: http://elinux.org/R-Pi_Troubleshooting
 ALSA issues, see https://docs.mopidy.com/en/latest/installation/raspberrypi/
+Wifi issues
+
+- Wifi lost after a while: http://raspberrypi.stackexchange.com/questions/1384/how-do-i-disable-suspend-mode
 
 ### Run on boot on Raspberry pi
 Define things to run on boot in /etc/rc.local.
