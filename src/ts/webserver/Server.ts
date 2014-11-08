@@ -5,6 +5,7 @@
 /// < reference path="../express/express.d.ts" />
 /// < reference path="../yamljs/yamljs.d.ts" />
 import express = require('express');
+import _ = require('lodash');
 import spotify = require('spotserv/node-spotify/spotify');
 import YAML = require('yamljs');
 export class Server {
@@ -31,11 +32,17 @@ export class Server {
 
 
     start():void {
-        this.webapp.listen(this.port, ()=>console.log('Spot web server is ready, try GET http://localhost:' + this.port+'/spot/search'));
+        this.webapp.listen(this.port, ()=>console.log('Spot web server is ready, try POST GET http://localhost:' + this.port + '/spot/login, then GET http://localhost:' + this.port + '/spot/search'));
     }
 
     private configure(config:{userName:string;password:string}):void {
-        this.webapp.route('/spot/login').post((req, res, next)=> {
+        this.webapp.use((req, res, next)=> {
+            res.header("Access-Control-Allow-Origin", "*");
+            res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+            next();
+        });
+
+        this.webapp.route('/spot/login').post((req, res)=> {
             console.log('/spot/login');
             var remember = req.query.remember || false;
             var userRemembered = req.query.userRemembered || false;
@@ -43,31 +50,38 @@ export class Server {
             res.status(200).end();
         });
 
-        this.webapp.route('/spot/logout').post((req, res, next)=> {
+        this.webapp.route('/spot/logout').post((req, res)=> {
             console.log('/spot/logout');
             this.spot.logout();
             res.status(200).end();
         });
 
-        this.webapp.route('/spot/playlists/:id').get((req, res, next)=> {
+        this.webapp.route('/spot/playlists/:id').get((req, res)=> {
             console.log('/spot/playlists with params is ', JSON.stringify(req.params));
             var playlist = this.spot.playlistContainer.getPlaylist(parseInt(req.params.id));
 
             var pl0ResponseObject = {
-                name: playlist.name
+                name: playlist.name,
+                tracks: _(playlist.getTracks()).map((t)=> {
+                    return {
+                        name: t.name,
+                        artists: t.artists,
+                        album: t.album
+                    };
+                }).value()
             };
             console.log('Playlist: ', pl0ResponseObject);
             res.status(200).json(pl0ResponseObject);
         });
 
-        this.webapp.route('/spot/playlists').get((req, res, next)=> {
+        this.webapp.route('/spot/playlists').get((req, res)=> {
             console.log('/spot/playlists # of playlists: ', this.spot.playlistContainer.numPlaylists);
             res.status(200).json(this.spot.playlistContainer.numPlaylists);
         });
 
         this.webapp.post('/spot/player/play/:plId/:trackId', (req, res)=> {
             console.log('/spot/player/play with params: ', JSON.stringify(req.params));
-            var plIndex = req.params.plId ? parseInt(req.params.plId):0;
+            var plIndex = req.params.plId ? parseInt(req.params.plId) : 0;
             var trackIndex = req.params.trackId ? parseInt(req.params.trackId) : 0;
             var track = this.spot.playlistContainer
                 .getPlaylist(plIndex)
